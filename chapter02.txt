@@ -25,9 +25,46 @@
 					  (use "git add <file>..." to include in what will be committed)
 						chapter01.txt
 					nothing added to commit but untracked files present (use "git add" to track)
+					
+		2.添加文件到暂存区——（stage操作）
+			回显：
+					On branch master
+					No commits yet
+					Changes to be committed:
+					  (use "git rm --cached <file>..." to unstage)
+						new file:   chapter01.txt
+					Untracked files:
+					  (use "git add <file>..." to include in what will be committed)
+						chapter02.txt
 
-
-
+		3.撤回已经add过的文件——（unstage操作）
+			git rm --cached chapter01.txt 
+			
+			git rm --cached fileName和git reset HEAD fileName的区别：
+				前者是将文件从整个项目库中删除，该操作经过提交之后会删除所有代码库克隆镜像中的该文件，而仅仅在本地工作区中保留一个untracked版本
+				后者是将文件自暂存库中撤回到工作区，操作后再commit的内容就不再包含该文件内的改动，该文件也从staged回退到modified状态
+		
+		4.忽略某些文件
+			忽略对象：无需纳入 Git 的管理，也不希望它们总出现在未跟踪文件列表（自动生成的文件，比如日志文件，或者编译过程中创建的临时文件等）
+			建一个名为.gitignore 的文件，列出要忽略的文件模式
+			忽略规则：
+					￿ 所有空行或者以注释符号＃ 开头的行都会被 Git 忽略。
+					￿ 可以使用标准的 glob 模式匹配。
+					￿ 匹配模式最后跟反斜杠（/）说明要忽略的是目录。
+					￿ 要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反。
+			glob 模式是指 shell 所使用的简化了的正则表达式：
+					星号（*）匹配零个或多个任意字符；
+					问号（?）只匹配一个任意字符；
+					[abc] 匹配任何一个列在方括号中的字符（这个例子要么匹配一个 a，要么匹配一个b，要么匹配一个 c）；
+					如果在方括号中使用短划线分隔两个字符，表示所有在这两个字符范围内的都可以匹配（比如[0-9] 表示匹配所有 0 到 9 的数字）。
+					/TODO # 仅仅忽略项目根目录下的TODO 文件，不包括subdir/TODO
+					build/ # 忽略build/ 目录下的所有文件
+					doc/*.txt # 会忽略doc/notes.txt 但不包括doc/server/arch.txt
+					
+		5.查看已暂存和未暂存的更新
+			查看已修改未暂存的文件 
+			git diff 此命令比较的是工作目录中当前文件和暂存区域快照之间的差异
+			要看已经暂存起来的文件和上次提交时的快照之间的差异，可以用git diff --cached
 
 
 
