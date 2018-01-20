@@ -408,12 +408,56 @@
                 5e0a1ae (HEAD -> master) 删除.gitignore文件之后提交
                 cd7cd77 建立.gitignore文件，忽略相关文件
 
-    4.撤消操作
+4.撤消操作
         1.修改最后一次提交
             git commit --amend  此命令将使用当前的暂存区域快照提交。如果刚才提交完没有作任何改动，直接运行此命
                                 令的话，相当于有机会重新编辑提交说明
 
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git commit -a -m "挪动文件 待修补操作 2018-01-21 01:28:45"
+                [master b7235ca] 挪动文件 待修补操作 2018-01-21 01:28:45
+                 3 files changed, 343 insertions(+), 1 deletion(-)
+                 create mode 100644 .gitignore
+                 rename chapter01.txt => chapter01/chapter1.txt (100%)
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git mv chapter01/chapter1.txt chapter01.txt
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git commit --amend -a -m "撤销操作 将文件移回原来位置 2018-01-21 01:30:32"
+                [master 1d33d24] 撤销操作 将文件移回原来位置 2018-01-21 01:30:32
+                 Date: Sun Jan 21 01:28:48 2018 +0800
+                 2 files changed, 343 insertions(+), 1 deletion(-)
+                 create mode 100644 .gitignore
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log -3 --oneline
+                1d33d24 (HEAD -> master) 撤销操作 将文件移回原来位置 2018-01-21 01:30:32
+                5e0a1ae 删除.gitignore文件之后提交
+                cd7cd77 建立.gitignore文件，忽略相关文件
 
+            如上所示，第一次提交之后的散列值为b7235ca，然后发现文件位置错误，进行修复之后立即git commit --amend提交一次，散列值1d33d24
+            操作成功后再查询日志，带有错误的提交的散列值已经被覆盖掉，只留下修正后的提交记录
+
+        2.取消已经暂存的文件
+            git reset HEAD <file>... 取消暂存
+
+        3.取消对文件的修改（相当于IDE里面的Revert回滚操作）
+            git checkout -- <file>  抛弃文件修改
+
+5.远程仓库的使用
+    远程仓库：托管在网络上的项目仓库，可能会有好多个，其中有些你只能读，另外有些可以写。
+    远程仓库管理操作：添加远程库，移除废弃的远程库，管理各式远程库分支，定义是否跟踪这些分支，等等
+
+    1.查看当前的远程库
+        git remote 命令，它会列出每个远程库的简短名字,加上-v 选项（译注：此为--verbose 的简写，取首字母），显示对应的克隆地址
+        192:simplegit-progit zhengjun$ git remote -v
+        origin	git://github.com/schacon/simplegit-progit.git (fetch)
+        origin	git://github.com/schacon/simplegit-progit.git (push)
+
+    2.添加远程仓库
+        git remote add [shortname] [url]    添加一个新的远程仓库，可以指定一个简单的名字，以便将来引用
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote -v
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote add origin https://github.com/zhengjun1987hz/ProGit.git
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote -v
+        origin  https://github.com/zhengjun1987hz/ProGit.git (fetch)
+        origin  https://github.com/zhengjun1987hz/ProGit.git (push)
+        第一次查询远程仓库结果为空，没有显示结果
+        执行remote add 操作之后再查已经成功添加
 
 
 
