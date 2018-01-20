@@ -1,0 +1,67 @@
+第一章 起步
+
+1.版本控制的历史
+	本地版本控制——采用本地数据库来记录文件版本迭代的历次更新，代表：rcs——记录每次更新后的变化
+	集中化的版本控制系统Centralized Version Control System——都有一个集中单一的版本控制服务器，保存着所有的文件修改历史，协同工作的用户们通过客户端连接到版本控制服务器，进行检出或提交操作
+			缺点：1.若服务器故障无法工作则所有用户都无法进行操作；2.服务器如无充分备份则有数据丢失风险
+	分布式版本控制系统Distributed Version Control System——每个用户都拥有整个项目的全部历史信息，复制了整个项目镜像，保存不同版本的文件而不是保存文件版本差异
+	
+2.Git的历史
+	Linux内核开源项目
+		1991—2002 花费大量时间精力在提交保存归档补丁的繁琐事务上
+		2002—2005	BitKeeper
+		2005—	Linux开源社区决定开发一套属于自己的分布式版本控制系统
+	Git的设计目标
+		速度	简单的设计		强力支持非线性开发模式(允许同时存在几千个分支)		完全分布式
+
+3.Git基础
+		1.直接记录快照，而非比较差异：若部分文件没有变化，则保存一个对上个版本的文件的连接
+		2.近乎所有的操作都是本地执行：使用散列值而非版本号来标识不同提交版本，所以不用联网计算版本号；本地代码库拥有完整的版本更新历史记录
+		3.时刻保持数据的完整性：每次提交都要对内容进行校验和的计算，并将校验和计算结果作为数据的唯一标识和索引，若有缺失和损坏都能立即察觉
+		4.多数操作仅添加数据：绝大部分Git操作都是向文件数据库中添加记录，都是可逆的
+		5.文件的三种状态：
+				commited已提交
+				modified已修改
+				staged已暂存
+
+4.Git的安装
+
+5.初次运行 Git 前的配置
+	Git配置和工作环境变量——专门用来配置或读取相应的工作环境变量。而正是由这些环境变量，决定了 Git 在各个环节的具体工作方式和行为
+		/etc/gitconfig 文件：git config 时用--system 选项
+		~/.gitconfig 文件：git config 时用--global 选项
+		当前项目的 git 目录中的配置文件（也就是工作目录中的.git/config 文件）
+	每一个级别的配置都会覆盖上层的相同配置，所以.git/config 里的配置会覆盖/etc/gitconfig 中的同名变量
+	
+	git config --list //查看配置信息
+	回显：
+			credential.helper=osxkeychain
+			user.name=郑军
+			user.email=zhengjun1987@outlook.com
+			core.repositoryformatversion=0
+			core.filemode=true
+			core.bare=false
+			core.logallrefupdates=true
+			core.ignorecase=true
+			core.precomposeunicode=true
+			remote.origin.url=https://github.com/zhengjun1987hz/CPrimerPlus5thEdition.git
+			remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+			branch.master.remote=origin
+			branch.master.merge=refs/heads/master
+	
+	git config --global --list//显示系统当前用户下的Git配置信息
+	回显：
+			user.name=郑军
+			user.email=zhengjun1987@outlook.com
+			
+	查看特定配置内容
+	git config 配置名称
+								git config user.email
+								回显：
+										zhengjun1987@outlook.com
+6.获取帮助信息
+	$ git help <verb>
+	$ git <verb> --help
+	$ man git-<verb>
+
+
