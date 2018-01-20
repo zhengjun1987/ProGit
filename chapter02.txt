@@ -74,7 +74,345 @@
 			可以用git rm 命令完成此项工作，并连带从工作目录中删除指定的文件，这样以后就不会出现在未跟踪文件清单中了
 			
 			创建.gitignore文件，输入内容并提交，push到GitHub上面去
-			
+			然后rm .gitignore文件，查询git状态
+			回显：
+			    zhengjuns-MacBook-Pro:ProGit zhengjun$ git rm .gitignore
+               rm '.gitignore'
+               zhengjuns-MacBook-Pro:ProGit zhengjun$ git status
+               On branch master
+               Changes to be committed:
+                 (use "git reset HEAD <file>..." to unstage)
+
+                       deleted:    .gitignore
+
+               Untracked files:
+                 (use "git add <file>..." to include in what will be committed)
+
+                       .DS_Store
+                       .idea/
+                       cmake-build-debug/
+
+			可以看到之前的忽略规则都失效了
+			现在提交该删除动作，看GitHub上面的.gitignore是否会被删除
+			zhengjuns-MacBook-Pro:ProGit zhengjun$ git commit -m "删除.gitignore文件之后提交"
+            [master 5e0a1ae] 删除.gitignore文件之后提交
+             1 file changed, 4 deletions(-)
+             delete mode 100644 .gitignore
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git push https://github.com/zhengjun1987hz/ProGit.git master
+            Counting objects: 2, done.
+            Delta compression using up to 4 threads.
+            Compressing objects: 100% (2/2), done.
+            Writing objects: 100% (2/2), 265 bytes | 265.00 KiB/s, done.
+            Total 2 (delta 1), reused 0 (delta 0)
+            remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+            To https://github.com/zhengjun1987hz/ProGit.git
+               cd7cd77..5e0a1ae  master -> master
+
+            查看GitHub，该文件已经被删除
+
+        9.删除一个普通文件（git checkout -- README.md）
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git status
+            On branch master
+            Changes to be committed:
+              (use "git reset HEAD <file>..." to unstage)
+
+                    new file:   .gitignore
+                    deleted:    README.md
+
+            Changes not staged for commit:
+              (use "git add <file>..." to update what will be committed)
+              (use "git checkout -- <file>..." to discard changes in working directory)
+
+                    modified:   .gitignore
+                    modified:   chapter02.txt
+
+          回撤该删除操作
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git reset HEAD README.md
+            Unstaged changes after reset:
+            M       .gitignore
+            D       README.md
+            M       chapter02.txt
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git status
+            On branch master
+            Changes to be committed:
+              (use "git reset HEAD <file>..." to unstage)
+
+                    new file:   .gitignore
+
+            Changes not staged for commit:
+              (use "git add/rm <file>..." to update what will be committed)
+              (use "git checkout -- <file>..." to discard changes in working directory)
+
+                    modified:   .gitignore
+                    deleted:    README.md
+                    modified:   chapter02.txt
+
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git checkout -- README.md
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git status
+            On branch master
+            Changes to be committed:
+              (use "git reset HEAD <file>..." to unstage)
+
+                    new file:   .gitignore
+
+            Changes not staged for commit:
+              (use "git add <file>..." to update what will be committed)
+              (use "git checkout -- <file>..." to discard changes in working directory)
+
+                    modified:   .gitignore
+                    modified:   chapter02.txt
+
+
+        10.修改文件名/移动文件
+            git mv file_from file_to
+
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git mv chapter01.txt chapter01/chapter1.txt
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git status
+            On branch master
+            Changes to be committed:
+              (use "git reset HEAD <file>..." to unstage)
+
+                    new file:   .gitignore
+                    renamed:    chapter01.txt -> chapter01/chapter1.txt
+
+            Changes not staged for commit:
+              (use "git add <file>..." to update what will be committed)
+              (use "git checkout -- <file>..." to discard changes in working directory)
+
+                    modified:   .gitignore
+                    modified:   chapter02.txt
+
+3.查看提交历史
+    克隆一个网上代码项目
+    192:GitProjects zhengjun$ git clone git://github.com/schacon/simplegit-progit.git
+    Cloning into 'simplegit-progit'...
+    remote: Counting objects: 13, done.
+    remote: Total 13 (delta 0), reused 0 (delta 0), pack-reused 13
+    Receiving objects: 100% (13/13), done.
+    Resolving deltas: 100% (3/3), done.
+
+    查看其日志
+    192:GitProjects zhengjun$ cd simplegit-progit/
+    192:simplegit-progit zhengjun$ git log
+    commit ca82a6dff817ec66f44342007202690a93763949 (HEAD -> master, origin/master, origin/HEAD)
+    Author: Scott Chacon <schacon@gmail.com>
+    Date:   Mon Mar 17 21:52:11 2008 -0700
+
+        changed the verison number
+
+    commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7 //SHA-1 校验和
+    Author: Scott Chacon <schacon@gmail.com>        //作者的名字和电子邮件地址
+    Date:   Sat Mar 15 16:40:33 2008 -0700          //提交时间
+
+        removed unnecessary test code               //提交说明
+
+    commit a11bef06a3f659402fe7563abf99ad00de2209e6
+    Author: Scott Chacon <schacon@gmail.com>
+    Date:   Sat Mar 15 10:31:28 2008 -0700
+
+        first commit
+
+
+    git log的其他常用选项
+    NAME
+           git-log - Show commit logs显示提交日志
+    SYNOPSIS
+           git log [<options>] [<revision range>] [[--] <path>...]
+    DESCRIPTION
+           Shows the commit logs.
+           The command takes options applicable to the git rev-list command to control what is shown and how, and options applicable to the git diff-* commands to control how the changes
+           each commit introduces are shown.
+    OPTIONS
+           --follow
+               Continue listing the history of a file beyond renames (works only for a single file).
+           --no-decorate, --decorate[=short|full|auto|no]
+               Print out the ref names of any commits that are shown. If short is specified, the ref name prefixes refs/heads/, refs/tags/ and refs/remotes/ will not be printed. If full is
+               specified, the full ref name (including prefix) will be printed. If auto is specified, then if the output is going to a terminal, the ref names are shown as if short were
+               given, otherwise no ref names are shown. The default option is short.
+           --source
+               Print out the ref name given on the command line by which each commit was reached.
+           --use-mailmap
+               Use mailmap file to map author and committer names and email addresses to canonical real names and email addresses. See git-shortlog(1).
+           --full-diff
+               Without this flag, git log -p <path>...  shows commits that touch the specified paths, and diffs about the same specified paths. With this, the full diff is shown for commits
+               that touch the specified paths; this means that "<path>..." limits only commits, and doesn't limit diff for those commits.
+               Note that this affects all diff-based output types, e.g. those produced by --stat, etc.
+           --log-size
+               Include a line "log size <number>" in the output for each commit, where <number> is the length of that commit's message in bytes. Intended to speed up tools that read log
+               messages from git log output by allowing them to allocate space in advance.
+           -L <start>,<end>:<file>, -L :<funcname>:<file>
+               Trace the evolution of the line range given by "<start>,<end>" (or the function name regex <funcname>) within the <file>. You may not give any pathspec limiters. This is
+               currently limited to a walk starting from a single revision, i.e., you may only give zero or one positive revision arguments. You can specify this option more than once.
+               <start> and <end> can take one of these forms:
+               o   number
+                   If <start> or <end> is a number, it specifies an absolute line number (lines count from 1).
+               o   /regex/
+                   This form will use the first line matching the given POSIX regex. If <start> is a regex, it will search from the end of the previous -L range, if any, otherwise from the
+                   start of file. If <start> is "^/regex/", it will search from the start of file. If <end> is a regex, it will search starting at the line given by <start>.
+               o   +offset or -offset
+                   This is only valid for <end> and will specify a number of lines before or after the line given by <start>.
+
+               If ":<funcname>" is given in place of <start> and <end>, it is a regular expression that denotes the range from the first funcname line that matches <funcname>, up to the
+               next funcname line. ":<funcname>" searches from the end of the previous -L range, if any, otherwise from the start of file. "^:<funcname>" searches from the start of file.
+
+        1.追踪特定文件的日志历史 git log --follow chapter02.txt
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --follow chapter02.txt
+                commit cd7cd770dc625a2da57ca94fb84c1a06fa75d107
+                Author: 郑军 <zhengjun1987@outlook.com>
+                Date:   Sat Jan 20 21:07:52 2018 +0800
+
+                    建立.gitignore文件，忽略相关文件
+
+                commit a7a19bee9cbc78b608d655ca0dde7214e69d82f5
+                Author: 郑军 <zhengjun1987@outlook.com>
+                Date:   Sat Jan 20 20:28:49 2018 +0800
+
+                    Pro Git chapter02 Basical Operations 2018-01-20 20:28:44
+
+                commit 645119d903be422f9266695df9cdad8465347634
+                Author: 郑军 <zhengjun1987@outlook.com>
+                Date:   Sat Jan 20 19:08:52 2018 +0800
+
+                    Pro Git chapter01&chapter02 basical operations 2018-01-20 19:08:48
+
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --oneline --follow .gitignore
+                5e0a1ae (HEAD -> master) 删除.gitignore文件之后提交
+                cd7cd77 建立.gitignore文件，忽略相关文件
+                zhengjuns-MacBook-Pro:ProGit zhengjun$
+
+        2.不带HEAD指针之类信息的log（git log --no-decorate）
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --no-decorate
+                commit 5e0a1aecfbb5b95bbd1c8cd13cf6a136fbe588c8
+                Author: 郑军 <zhengjun1987@outlook.com>
+                Date:   Sat Jan 20 21:18:24 2018 +0800
+
+                    删除.gitignore文件之后提交
+
+        3.常用-p 选项展开显示每次提交的内容差异，用-2 则仅显示最近的两次更新  (代码审查，或者要快速浏览其他协作者提交的更新都作了哪些改动 )
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log -p -1
+                commit 5e0a1aecfbb5b95bbd1c8cd13cf6a136fbe588c8 (HEAD -> master)
+                Author: 郑军 <zhengjun1987@outlook.com>
+                Date:   Sat Jan 20 21:18:24 2018 +0800
+
+                    删除.gitignore文件之后提交
+
+                diff --git a/.gitignore b/.gitignore
+                deleted file mode 100644
+                index a1c2033..0000000
+                --- a/.gitignore
+                +++ /dev/null
+                @@ -1,4 +0,0 @@
+                -.DS_STORE
+                -.idea/
+                -*.iml
+                -cmake-build-debug/
+                \ No newline at end of file
+
+        4.--stat，仅显示简要的增改行数统计
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log -2 --stat
+                commit 5e0a1aecfbb5b95bbd1c8cd13cf6a136fbe588c8 (HEAD -> master)
+                Author: 郑军 <zhengjun1987@outlook.com>
+                Date:   Sat Jan 20 21:18:24 2018 +0800
+
+                    删除.gitignore文件之后提交
+
+                 .gitignore | 4 ----
+                 1 file changed, 4 deletions(-)
+
+                commit cd7cd770dc625a2da57ca94fb84c1a06fa75d107
+                Author: 郑军 <zhengjun1987@outlook.com>
+                Date:   Sat Jan 20 21:07:52 2018 +0800
+
+                    建立.gitignore文件，忽略相关文件
+
+                 .gitignore    |  4 ++++
+                 chapter02.txt | 10 ++++++++++
+                 2 files changed, 14 insertions(+)
+
+            192:simplegit-progit zhengjun$ git log --stat --oneline
+                ca82a6d (HEAD -> master, origin/master, origin/HEAD) changed the verison number
+                 Rakefile | 2 +-
+                 1 file changed, 1 insertion(+), 1 deletion(-)
+                085bb3b removed unnecessary test code
+                 lib/simplegit.rb | 5 -----
+                 1 file changed, 5 deletions(-)
+                a11bef0 first commit
+                 README           |  6 ++++++
+                 Rakefile         | 23 +++++++++++++++++++++++
+                 lib/simplegit.rb | 25 +++++++++++++++++++++++++
+                 3 files changed, 54 insertions(+)
+
+        5.常用的--pretty 选项，可以指定使用完全不同于默认格式的方式展示提交历史
+            git log --pretty=oneline
+            git log --pretty=short
+            git log --pretty=full
+            git log --pretty=fuller
+            git log --pretty=format:"%h - %an, %ar : %s"
+            git log --graph
+            git log --oneline --graph
+
+            选项说明
+            %H 提交对象（commit）的完整哈希字串
+            %h 提交对象的简短哈希字串
+            %T 树对象（tree）的完整哈希字串
+            %t 树对象的简短哈希字串
+            %P 父对象（parent）的完整哈希字串
+            %p 父对象的简短哈希字串
+            %an 作者（author）的名字
+            %ae 作者的电子邮件地址
+            %ad 作者修订日期（可以用 -date= 选项定制格式）
+            %ar 作者修订日期，按多久以前的方式显示
+            %cn 提交者(committer)的名字
+            %ce 提交者的电子邮件地址
+            %cd 提交日期
+            %cr 提交日期，按多久以前的方式显示
+            %s 提交说明
+
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --pretty=oneline
+                5e0a1aecfbb5b95bbd1c8cd13cf6a136fbe588c8 (HEAD -> master) 删除.gitignore文件之后提交
+                cd7cd770dc625a2da57ca94fb84c1a06fa75d107 建立.gitignore文件，忽略相关文件
+                7ed76eef251b90e717925c1410f1bce694e66a58 Merge branch 'master' of https://github.com/zhengjun1987hz/ProGit
+                a7a19bee9cbc78b608d655ca0dde7214e69d82f5 Pro Git chapter02 Basical Operations 2018-01-20 20:28:44
+                56e7d038d92c3ddba28840b3b586e6b3b2465ddc Initial commit
+                645119d903be422f9266695df9cdad8465347634 Pro Git chapter01&chapter02 basical operations 2018-01-20 19:08:48
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --pretty=format:"%h - %an, %ar : %s"
+                5e0a1ae - 郑军, 4 hours ago : 删除.gitignore文件之后提交
+                cd7cd77 - 郑军, 4 hours ago : 建立.gitignore文件，忽略相关文件
+                7ed76ee - 郑军, 4 hours ago : Merge branch 'master' of https://github.com/zhengjun1987hz/ProGit
+                a7a19be - 郑军, 4 hours ago : Pro Git chapter02 Basical Operations 2018-01-20 20:28:44
+                56e7d03 - 郑军, 5 hours ago : Initial commit
+                645119d - 郑军, 6 hours ago : Pro Git chapter01&chapter02 basical operations 2018-01-20 19:08:48
+
+            -p 按补丁格式显示每个更新之间的差异。
+            --stat 显示每次更新的文件修改统计信息。
+            --shortstat 只显示--stat 中最后的行数修改添加移除统计。
+            --name-only 仅在提交信息后显示已修改的文件清单。
+            --name-status 显示新增、修改、删除的文件清单。
+            --abbrev-commit 仅显示SHA-1 的前几个字符，而非所有的40 个字符。
+            --relative-date 使用较短的相对时间显示（比如，“2 weeks ago”）。
+            --graph 显示ASCII 图形表示的分支合并历史。
+            --pretty 使用其他格式显示历史提交信息。可用的选项包括oneline，short，full，fuller 和format
+
+        6.限制输出长度
+            -<n> 选项的写法，其中的n 可以是任何自然数，表示仅显示最近的若干条提交。
+            按照时间作限制的选项，比如--since 和--until
+            --author 选项显示指定作者的提交
+            --grep 选项搜索提交说明中的关键字
+            --all-match 选项用于要得到同时满足以上两个选项搜索条件
+
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --since=5.hours --oneline  --follow chapter02.txt
+                cd7cd77 建立.gitignore文件，忽略相关文件
+                a7a19be Pro Git chapter02 Basical Operations 2018-01-20 20:28:44
+
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --author 郑军 --grep "文件" --all-match --oneline
+                5e0a1ae (HEAD -> master) 删除.gitignore文件之后提交
+                cd7cd77 建立.gitignore文件，忽略相关文件
+
+    4.撤消操作
+        1.修改最后一次提交
+            git commit --amend  此命令将使用当前的暂存区域快照提交。如果刚才提交完没有作任何改动，直接运行此命
+                                令的话，相当于有机会重新编辑提交说明
+
 
 
 
