@@ -40,3 +40,33 @@
     7.合并冲突
         合并操作并不会如此顺利。如果在不同的分支中都修改了同一个文件的同一部分，Git 就无法干净地把两者合到一起（译注：逻辑上说，这种问题只能由人来裁决。）
         git status 会显示冲突的文件列表，任何包含未解决冲突的文件都会以未合并（unmerged）的状态列出。Git 会在有冲突的文件里加入标准的冲突解决标记，可以通过它们来手工定位并解决这些冲突。
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git checkout -b dev
+            Switched to a new branch 'dev'
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git commit -a -m "dev分支编辑README.md"
+            [dev 8733cef] dev分支编辑README.md
+             1 file changed, 2 insertions(+)
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git checkout master
+            Switched to branch 'master'
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git commit -a -m "master分支编辑README.md"
+            [master 20e1c38] master分支编辑README.md
+             1 file changed, 2 insertions(+)
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git merge dev
+            Auto-merging README.md
+            CONFLICT (content): Merge conflict in README.md
+            Automatic merge failed; fix conflicts and then commit the result.
+
+        此时出现合并冲突，启动冲突编辑工具：
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git mergetool README.md
+            Merging:
+            README.md
+
+            Normal merge conflict for 'README.md':
+              {local}: modified file
+              {remote}: modified file
+            4 files to edit
+
+        冲突解决之后继续未完成的合并操作：
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git merge --continue
+            [master a44a8c8] Merge branch 'dev'
+        此时，一次非快进合并才正式完成
