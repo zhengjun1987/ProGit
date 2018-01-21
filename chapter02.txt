@@ -454,10 +454,215 @@
         zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote -v
         zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote add origin https://github.com/zhengjun1987hz/ProGit.git
         zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote -v
-        origin  https://github.com/zhengjun1987hz/ProGit.git (fetch)
-        origin  https://github.com/zhengjun1987hz/ProGit.git (push)
+            origin  https://github.com/zhengjun1987hz/ProGit.git (fetch)
+            origin  https://github.com/zhengjun1987hz/ProGit.git (push)
         第一次查询远程仓库结果为空，没有显示结果
         执行remote add 操作之后再查已经成功添加
 
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote -v
+            origin  https://github.com/zhengjun1987hz/ProGit.git (fetch)
+            origin  https://github.com/zhengjun1987hz/ProGit.git (push)
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote add gitee https://gitee.com/zhengjun1987/ProGit.git
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote -v
+            gitee   https://gitee.com/zhengjun1987/ProGit.git (fetch)
+            gitee   https://gitee.com/zhengjun1987/ProGit.git (push)
+            origin  https://github.com/zhengjun1987hz/ProGit.git (fetch)
+            origin  https://github.com/zhengjun1987hz/ProGit.git (push)
+
+    3.从远程仓库抓取数据
+        git fetch [remote-name] 到远程仓库中拉取所有你本地仓库中还没有的数据
+        运行完成后，你就可以在本地访问该远程仓库中的所有分支，将其中某个分支合并到本地，或者只是取出某个分支
+        fetch 命令只是将远端的数据拉到本地仓库，并不自动合并到当前工作分支，只有当你确实准备好了，才能手工合并.
+
+        默认情况下git clone 命令本质上就是自动创建了本地的 master 分支用于跟踪远程仓库中的 master 分支（假设远程仓库确实有
+        master 分支）。所以一般我们运行git pull，目的都是要从原始克隆的远端仓库中抓取数据后，合并到工作目录中的当前分支。
+
+    4.推送数据到远程仓库
+        git push [remote-name] [branch-name]
+        如果在你推数据前，已经有其他人推送了若干更新，那你的推送操作就会被驳回。你必须先把他们的更新抓取到本地，合并到自己的项目中，然后才可以再次推送。
+
+    5.查看远程仓库信息
+        git remote show [remote-name] 查看某个远程仓库的详细信息
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git remote show gitee
+            * remote gitee
+              Fetch URL: https://gitee.com/zhengjun1987/ProGit.git
+              Push  URL: https://gitee.com/zhengjun1987/ProGit.git
+              HEAD branch: master
+              Remote branch:
+                master new (next fetch will store in remotes/gitee)
+              Local ref configured for 'git push':
+                master pushes to master (up to date)
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git fetch gitee
+            remote: Counting objects: 10, done.
+            remote: Compressing objects: 100% (10/10), done.
+            remote: Total 10 (delta 4), reused 0 (delta 0)
+            Unpacking objects: 100% (10/10), done.
+            From https://gitee.com/zhengjun1987/ProGit
+             * [new branch]      master     -> gitee/master
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git merge gitee/master
+            Updating 8fe188d..e79e83a
+            Fast-forward
+             README.md | 4 ++++
+             1 file changed, 4 insertions(+)
+
+    6.远程仓库的删除和重命名
+        git remote rename old_name new_name 命令修改某个远程仓库在本地的简称
+        git remote rm repo_name 命令  移除对应的远端仓库
+
+6.打标签
+    1.列出现有标签
+        git tag
+
+    2.新建标签
+        标签有两种类型：轻量级的（lightweight）和含附注的（annotated）
+        轻量级的（lightweight）：像是个不会变化的分支，实际上它就是个指向特定提交对象的引用
+        含附注的（annotated）：实际上是存储在仓库中的一个独立对象，它有自身的校验和信息，包含着标签的名字，
+                        电子邮件地址和日期，以及标签说明，标签本身也允许使用 GNU Privacy Guard (GPG)
+                        来签署或验证。
+
+    3.含附注的标签
+        git tag -a v1.4 -m '标签说明'    创建含有附注的标签
+        git show tag_name               显示标签信息
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git show v1.0
+            tag v1.0
+            Tagger: 郑军 <zhengjun1987@outlook.com>
+            Date:   Sun Jan 21 15:49:19 2018 +0800
+
+            打标签：含有附注的标签
+
+            commit e79e83ac76a5bf0df53ff17f4a4a6c177abf8fa4 (HEAD -> master, tag: v1.0, tag: show, gitee/master)
+            Author: 郑军 <zhengjun1987@outlook.com>
+            Date:   Sun Jan 21 15:12:48 2018 +0800
+
+                更新 README.md
+
+            diff --git a/README.md b/README.md
+            index 11cea6c..b44aaec 100644
+            --- a/README.md
+            +++ b/README.md
+            @@ -1,4 +1,6 @@
+             # ProGit
+            -《Pro Git》读书笔记\n第一章 起步
+            +《Pro Git》读书笔记
+            +
+            +第一章 起步
+
+             第二章 基本操作
+
+    4.签署标签
+        git tag -s v1.5 -m 'my signed 1.5 tag'
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git tag -s v1.0 -m "Signed tag v1.0"
+        fatal: tag 'v1.0' already exists
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git tag -s v1.1 -m "Signed tag v1.0"
+        fatal: cannot run gpg: No such file or directory
+        error: gpg failed to sign the data
+        error: unable to sign the tag
+
+    5.轻量级标签
+        git tag tag_name    一个-a，-s 或-m 选项都不用，直接给出标签名字即可
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git tag v1.1
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git show v1.1
+            commit e79e83ac76a5bf0df53ff17f4a4a6c177abf8fa4 (HEAD -> master, tag: v1.1, tag: v1.0, tag: show, gitee/master)
+            Author: 郑军 <zhengjun1987@outlook.com>
+            Date:   Sun Jan 21 15:12:48 2018 +0800
+
+                更新 README.md
+
+            diff --git a/README.md b/README.md
+            index 11cea6c..b44aaec 100644
+            --- a/README.md
+            +++ b/README.md
+            @@ -1,4 +1,6 @@
+             # ProGit
+            -《Pro Git》读书笔记\n第一章 起步
+            +《Pro Git》读书笔记
+            +
+            +第一章 起步
+
+             第二章 基本操作
+
+    6.后期加注标签
+        git tag -a tag_name commit_hash 可以在后期对早先的某次提交加注标签
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git tag -a v0.01 8fe188d
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git show v0.01
+            tag v0.01
+            Tagger: 郑军 <zhengjun1987@outlook.com>
+            Date:   Sun Jan 21 20:25:25 2018 +0800
+
+            version tag 0.01
+
+            commit 8fe188d770078f018efe56ac06eead98025793c6 (tag: v0.01, origin/master)
+            Author: 郑军 <zhengjun1987@outlook.com>
+            Date:   Sun Jan 21 02:31:27 2018 +0800
+
+                Pro Git chapter02 Basical Operations 2018-01-21 02:31:23
+
+            diff --git a/chapter02.txt b/chapter02.txt
+            index a96557e..11c723a 100644
+            --- a/chapter02.txt
+            +++ b/chapter02.txt
 
 
+    7.分享标签
+        默认情况下，git push 并不会把标签传送到远端服务器上，只有通过显式命令才能分享标
+        签到远端仓库。
+        git push origin [tagname]
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git push origin v0.01
+            Counting objects: 1, done.
+            Writing objects: 100% (1/1), 174 bytes | 174.00 KiB/s, done.
+            Total 1 (delta 0), reused 0 (delta 0)
+            To https://github.com/zhengjun1987hz/ProGit.git
+             * [new tag]         v0.01 -> v0.01
+
+
+        一次推送所有本地新增的标签上去，可以使用--tags 选项
+        git push origin --tags
+
+7.技巧和窍门
+    1.自动补全
+
+    2.Git 命令别名
+        git config --global alias.alias_string operation_sign
+        git config --global alias.unstage 'reset HEAD --'
+
+        实际操作：
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git config --global alias.unstage 'reset HEAD'
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git status
+            On branch master
+            Changes not staged for commit:
+              (use "git add <file>..." to update what will be committed)
+              (use "git checkout -- <file>..." to discard changes in working directory)
+
+                    modified:   chapter02.txt
+
+            no changes added to commit (use "git add" and/or "git commit -a")
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git add .
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git unstage README.md
+            Unstaged changes after reset:
+            M       README.md
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git status
+            On branch master
+            Changes to be committed:
+              (use "git reset HEAD <file>..." to unstage)
+
+                    modified:   chapter02.txt
+
+            Changes not staged for commit:
+              (use "git add <file>..." to update what will be committed)
+              (use "git checkout -- <file>..." to discard changes in working directory)
+
+                    modified:   README.md
+        操作之后已经可以使用自定义的操作别名unstage
+        此时再查看配置信息：
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git config --list --global
+            user.name=郑军
+            user.email=zhengjun1987@outlook.com
+            alias.unstage=reset HEAD
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git config alias.revertm 'checkout --'
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git revertm README.md
