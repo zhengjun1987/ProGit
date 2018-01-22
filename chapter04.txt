@@ -1,0 +1,40 @@
+第四章 服务器上的 Git
+
+    尽管技术上可以从个人的仓库里推送和拉取修改内容，但我们不
+    鼓励这样做，因为一不留心就很容易弄混其他人的进度。另外，你也一定希望合作者们即使
+    在自己不开机的时候也能从仓库获取数据 — 拥有一个更稳定的公共仓库十分有用。因此，
+    更好的合作方式是建立一个大家都可以访问的共享仓库，从那里推送和拉取数据。我们将把
+    这个仓库称为 “Git 服务器”；代理一个 Git 仓库只需要花费很少的资源，几乎从不需要整
+    个服务器来支持它的运行。
+
+1.协议
+    Git 可以使用四种主要的协议来传输数据：本地传输，SSH 协议，Git 协议和 HTTP 协议
+
+    1.本地协议
+        本地协议（Local protocol）:远程仓库在该协议中的表示，就是
+         硬盘上的另一个目录。这常见于团队每一个成员都对一个共享的文件系统（例如 NFS）拥
+         有访问权，或者比较少见的多人共用同一台电脑的情况。后面一种情况并不安全，因为所有
+         代码仓库实例都储存在同一台电脑里，增加了灾难性数据损失的可能性。
+
+        git clone /opt/git/project.git          使用硬链接或直接复制它所需要的文件
+        git clone file:///opt/git/project.git   Git 会调用它平时通过网络来传输数据的工序,效率较低
+
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git remote -v
+        local   C:\Users\Lenovo\Documents\MyLocalRepo\ProGit.git (fetch)
+        local   C:\Users\Lenovo\Documents\MyLocalRepo\ProGit.git (push)
+        origin  https://github.com/zhengjun1987/ProGit.git (fetch)
+        origin  https://github.com/zhengjun1987/ProGit.git (push)
+
+        优点:简单,基于现成的文件共享系统
+        缺点:难以控制不同来源的访问权限,不一定速度最快
+
+    2.SSH协议
+        最常用的Git传输协议
+        大多数环境已经支持通过SSH 对服务器的访问 — 即便还没有，架设起来也很容易。SSH 也是唯一一个同时支持读
+        写操作的网络协议。
+
+
+
+
+10.Git 托管服务
+    托管账户的建立通常比较省时，方便项目的启动，而且不涉及服务器的维护和监控。便于开源项目的社区协作.
