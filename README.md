@@ -1,5 +1,4 @@
-# ProGit
-《Pro Git》读书笔记
+# ProGit--《Pro Git》读书笔记
 
 第一章 起步
 
