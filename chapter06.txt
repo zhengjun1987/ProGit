@@ -1,0 +1,331 @@
+第六章 Git工具
+
+1.修订版本（Revision）选择
+    1.单个修订版本：可以使用给出的 SHA-1 值来指明一次提交
+
+    2.简短的SHA：能够通过你提供的前几个字符来识别你想要的那次提交，只要你提供的那部分 SHA-1 不短于四个字符，并且没有歧义
+        git show sha_1
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git show 24c2
+            commit 24c2f5a1679e415b848ea3ef669187abb9f5a332 (gitee/master)
+            Author: 郑军 <zhengjun1987@outlook.com>
+            Date:   Tue Jan 23 01:45:53 2018 +0800
+
+                Pro Git chapter05 Distributed Git 2018-01-23 01:45:48
+
+            diff --git a/README.md b/README.md
+            index 10a0fdb..1e8e78e 100644
+            --- a/README.md
+            +++ b/README.md
+            @@ -4,4 +4,8 @@
+
+             第二章 基本操作
+
+            -第三章 分支
+            \ No newline at end of file
+            +第三章 分支
+            +
+            +第四章 Git服务器
+            +
+            +第五章 分布式Git
+            \ No newline at end of file
+            diff --git a/chapter05 b/chapter05
+            new file mode 100644
+            index 0000000..247e761
+            --- /dev/null
+            +++ b/chapter05
+            @@ -0,0 +1,35 @@
+
+        传递--abbrev-commit 给gitlog 命令，输出结果里就会使用简短且唯一的值；它默认使用七个字符来表示，不过必要时
+        为了避免 SHA-1 的歧义，会增加字符数:
+
+            zhengjuns-MacBook-Pro:ProGit zhengjun$ git log --oneline --abbrev-commit
+                c51c09e (HEAD -> master, origin/master) Pro Git chapter05 Distributed Git 2018-1-23 18:21:51
+                4e44e26 Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+                3460906 Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+                837874a Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+                fd27ce2 Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+                e8f2b96 Pro Git chapter05 Distributed Git 2018-1-23 16:49:28
+                24c2f5a (gitee/master) Pro Git chapter05 Distributed Git 2018-01-23 01:45:48
+                671b0e6 Pro Git chapter04 Git Server 2018-1-22 18:16:50
+                7645777 Pro Git chapter03 Branch 2018-1-22 16:38:50
+                a2186ba Pro Git chapter03 Branch 2018-01-22 01:39:45
+                a44a8c8 Merge branch 'dev'
+                20e1c38 master分支编辑README.md
+                8733cef dev分支编辑README.md
+                50b3f02 Pro Git chapter03 Branch 2018-01-22 00:56:22
+                3bd5e45 Pro Git chapter02 Basical Operations 2018-01-21 21:55:31
+                e79e83a 更新 README.md
+                4ccc2d5 更新 README.md
+                a20c641 更新 README.md
+                68f785a 更新 README.md
+                8fe188d Pro Git chapter02 Basical Operations 2018-01-21 02:31:23
+                1d33d24 撤销操作 将文件移回原来位置 2018-01-21 01:30:32
+                5e0a1ae 删除.gitignore文件之后提交
+                cd7cd77 建立.gitignore文件，忽略相关文件
+                7ed76ee Merge branch 'master' of https://github.com/zhengjun1987hz/ProGit
+                a7a19be Pro Git chapter02 Basical Operations 2018-01-20 20:28:44
+                56e7d03 Initial commit
+                645119d Pro Git chapter01&chapter02 basical operations 2018-01-20 19:08:48
+
+    3.关于 SHA-1 的简短说明
+        如果你真的向仓库里提交了一个跟之前的某个对象具有相同 SHA-1 值的对象，Git 将会
+        发现之前的那个对象已经存在在 Git 数据库中，并认为它已经被写入了。如果什么时候你想
+        再次检出那个对象时，你会总是得到先前的那个对象的数据。
+
+    4.分支引用
+        指明一次提交的最直接的方法要求有一个指向它的分支引用。这样，你就可以在任何需要
+        一个提交对象或者 SHA-1 值的 Git 命令中使用该分支名称了。
+
+        这句话的意思是，分支可以被视为其最新的一次commit的引用,以下两句等价
+        git show c51c09e
+        git show master
+
+        如果你想知道某个分支指向哪个特定的 SHA，或者想看任何一个例子中被简写的 SHA-1，你可以使用一个叫做rev-parse 的 Git 探测工具
+        git rev-parse branch_name
+
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git rev-parse master
+        c51c09ec7ef13f0e1c32174568ec8ae632d2d168
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git rev-parse origin/master
+        c51c09ec7ef13f0e1c32174568ec8ae632d2d168
+        zhengjuns-MacBook-Pro:ProGit zhengjun$ git rev-parse gitee/master
+        24c2f5a1679e415b848ea3ef669187abb9f5a332
+
+    5.引用日志里的简称
+        git reflog 查看引用日志
+            C:\Users\Lenovo\Desktop\GitProjects\ProGit>git reflog
+            7f4dfec (HEAD -> master, origin/master, origin/HEAD) HEAD@{0}: pull origin master: Fast-forward
+            c51c09e HEAD@{1}: commit (merge): Pro Git chapter05 Distributed Git 2018-1-23 18:21:51
+            4e44e26 HEAD@{2}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+            5cad965 HEAD@{3}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+            3460906 (local/master) HEAD@{4}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+            4defca3 HEAD@{5}: pull local master: Merge made by the 'recursive' strategy.
+            837874a HEAD@{6}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+            2800167 HEAD@{7}: pull origin master: Merge made by the 'recursive' strategy.
+            fd27ce2 HEAD@{8}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+            4d10cd4 HEAD@{9}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 17:37:31
+            96e3ad7 HEAD@{10}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 17:37:31
+            e8f2b96 HEAD@{11}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 16:49:28
+            27dfa72 HEAD@{12}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 15:18:11
+            4458cff HEAD@{13}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 10:15:36
+            829227c HEAD@{14}: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 10:15:36
+            24c2f5a HEAD@{15}: checkout: moving from dev to master
+            c315614 HEAD@{16}: checkout: moving from master to dev
+            24c2f5a HEAD@{17}: checkout: moving from dev to master
+            c315614 HEAD@{18}: checkout: moving from master to dev
+            24c2f5a HEAD@{19}: pull origin master: Fast-forward
+            671b0e6 HEAD@{20}: commit (amend): Pro Git chapter04 Git Server 2018-1-22 18:16:50
+            0d7ebfa HEAD@{21}: commit: Signed-off-by: Zheng Jun <zhengjun1987@outlook.com>
+            7645777 HEAD@{22}: checkout: moving from master to master
+            7645777 HEAD@{23}: checkout: moving from dev to master
+            c315614 HEAD@{24}: commit (merge): merge from origin:dev
+            7645777 HEAD@{25}: checkout: moving from master to dev
+            7645777 HEAD@{26}: merge dev: Fast-forward
+            a2186ba HEAD@{27}: checkout: moving from dev to master
+            7645777 HEAD@{28}: commit (amend): Pro Git chapter03 Branch 2018-1-22 16:38:50
+            626b367 HEAD@{29}: commit (amend): Pro Git chapter03 Branch 2018-1-22 12:08:59
+            05b7a98 HEAD@{30}: commit: Git Pro chapter03 Branch 2018-1-22 10:24:29
+            a2186ba HEAD@{31}: checkout: moving from master to dev
+            a2186ba HEAD@{32}: clone: from https://github.com/zhengjun1987/ProGit.git
+        每次你的分支顶端因为某些原因被修改时，Git 就会为你将信息保存在这个临时历史记录
+        里面。你也可以使用这份数据来指明更早的分支。
+
+        查看特定引用git show HEAD@{n}
+            C:\Users\Lenovo\Desktop\GitProjects\ProGit>git show HEAD@{4}
+            commit 3460906589337d8a055374ca599292cf39185a4d (local/master)
+            Merge: 837874a e8f2b96
+            Author: Zheng Jun <zhengjun1987@outlook.com>
+            Date:   Tue Jan 23 18:16:10 2018 +0800
+
+                Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+
+
+            C:\Users\Lenovo\Desktop\GitProjects\ProGit>git show HEAD@{1}
+            commit c51c09ec7ef13f0e1c32174568ec8ae632d2d168
+            Merge: 4e44e26 3460906
+            Author: Zheng Jun <zhengjun1987@outlook.com>
+            Date:   Tue Jan 23 18:21:53 2018 +0800
+
+                Pro Git chapter05 Distributed Git 2018-1-23 18:21:51
+
+
+        想要看类似于git log 输出格式的引用日志信息，你可以运行git log -g
+            C:\Users\Lenovo\Desktop\GitProjects\ProGit>git log -g -4
+            commit 7f4dfecf0a1b6bde88cdd5137d6d7ce096070d04 (HEAD -> master, origin/master, origin/HEAD)
+            Reflog: HEAD@{0} (Zheng Jun <zhengjun1987@outlook.com>)
+            Reflog message: pull origin master: Fast-forward
+            Author: <E9><83><91><E5><86>▒ <zhengjun1987@outlook.com>
+            Date:   Wed Jan 24 01:58:37 2018 +0800
+
+                Pro Git chapter06 Git Tools 2018-01-24 01:58:32
+
+            commit c51c09ec7ef13f0e1c32174568ec8ae632d2d168
+            Reflog: HEAD@{1} (Zheng Jun <zhengjun1987@outlook.com>)
+            Reflog message: commit (merge): Pro Git chapter05 Distributed Git 2018-1-23 18:21:51
+            Author: Zheng Jun <zhengjun1987@outlook.com>
+            Date:   Tue Jan 23 18:21:53 2018 +0800
+
+                Pro Git chapter05 Distributed Git 2018-1-23 18:21:51
+
+            commit 4e44e26cacc5b0f7e80fe42009c9094b26e3e76c
+            Reflog: HEAD@{2} (Zheng Jun <zhengjun1987@outlook.com>)
+            Reflog message: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+            Author: Zheng Jun <zhengjun1987@outlook.com>
+            Date:   Tue Jan 23 18:16:10 2018 +0800
+
+                Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+
+            commit 5cad9655318435824882d85cd7d50079e580d5b8
+            Reflog: HEAD@{3} (Zheng Jun <zhengjun1987@outlook.com>)
+            Reflog message: commit (amend): Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+            Author: Zheng Jun <zhengjun1987@outlook.com>
+            Date:   Tue Jan 23 18:16:10 2018 +0800
+
+                Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+        引用日志信息只存在于本地——这是一个记录你在你自己的仓库里做过什
+        么的日志。其他人拷贝的仓库里的引用日志不会和你的相同；而你新克隆一个仓库的时候，
+        引用日志是空的，因为你在仓库里还没有操作。
+
+    6.祖先引用
+        在引用最后加上一个^，Git 将其理解为此次提交的父提交。(当前版本不支持)
+
+    7.提交范围
+        查看你的试验分支上哪些没有被提交到主分支，那么你就可以使用
+        git log master..experiment  所有可从experiment分支中获得而不能从master分支中获得的提交
+
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git log local/master..master --oneline
+            7f4dfec (HEAD -> master, origin/master, origin/HEAD) Pro Git chapter06 Git Tools 2018-01-24 01:58:32
+            c51c09e Pro Git chapter05 Distributed Git 2018-1-23 18:21:51
+            4e44e26 Pro Git chapter05 Distributed Git 2018-1-23 18:11:18
+        这个功能在 保持当前分支最新 / 预览你将合并的提交 的时候特别有用
+
+    8.Git允许你在引用前使用^字符或者--not指明你不希望提交被包含其中的分支。
+      因此下面三个命令是等同的：
+      $ git log refA..refB
+      $ git log ^refA refB
+      $ git log refB --not refA
+
+      三点语法:
+      指定被两个引用中的一个包含但又不被两者同时包含的分支。
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git log origin/master...HEAD
+        commit a3cc21092967e73683b8a77b3412968dea52ebae (HEAD -> master)
+        Author: <E9><83><91><E5><86>▒ <zhengjun1987@outlook.com>
+        Date:   Wed Jan 24 01:58:37 2018 +0800
+
+            Pro Git chapter06 Git Tools 2018-1-24 15:40:25
+
+        commit 7f4dfecf0a1b6bde88cdd5137d6d7ce096070d04 (origin/master, origin/HEAD, local/master)
+        Author: <E9><83><91><E5><86>▒ <zhengjun1987@outlook.com>
+        Date:   Wed Jan 24 01:58:37 2018 +0800
+
+            Pro Git chapter06 Git Tools 2018-01-24 01:58:32
+      此log命令的一个常用参数是--left-right，它会显示每个提交到底处于哪一侧的分支。这使得数据更加有用。
+
+2.交互式暂存
+    Git包含一些交互式命令，可以方便地构建只包含特定组合和部分文件的提交。
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git add -i
+                   staged     unstaged path
+          1:    unchanged       +15/-0 chapter06.txt
+
+        *** Commands ***
+          1: status       2: update       3: revert       4: add untracked
+          5: patch        6: diff         7: quit         8: help
+        What now>
+
+    1.暂存和撤回文件
+        What now>的提示后输入2或者u，这个脚本会提示你那些文件你想要暂存
+        每个文件旁边的*表示选中的文件将被暂存
+        在update>>提示后直接敲入回车，Git会替你把所有选中的内容暂存
+            C:\Users\Lenovo\Desktop\GitProjects\ProGit>git add -i
+                       staged     unstaged path
+              1:    unchanged       +29/-1 chapter06.txt
+
+            *** Commands ***
+              1: status       2: update       3: revert       4: add untracked
+              5: patch        6: diff         7: quit         8: help
+            What now> 2
+                       staged     unstaged path
+              1:    unchanged       +29/-1 chapter06.txt
+            Update>> 1
+                       staged     unstaged path
+            * 1:    unchanged       +29/-1 chapter06.txt
+            Update>>
+            updated 1 path
+
+            *** Commands ***
+              1: status       2: update       3: revert       4: add untracked
+              5: patch        6: diff         7: quit         8: help
+            What now> 1
+                       staged     unstaged path
+              1:       +29/-1      nothing chapter06.txt
+
+            *** Commands ***
+              1: status       2: update       3: revert       4: add untracked
+              5: patch        6: diff         7: quit         8: help
+            What now> 3
+                       staged     unstaged path
+              1:       +29/-1      nothing chapter06.txt
+            Revert>> 1
+                       staged     unstaged path
+            * 1:       +29/-1      nothing chapter06.txt
+            Revert>>
+            reverted 1 path
+
+            *** Commands ***
+              1: status       2: update       3: revert       4: add untracked
+              5: patch        6: diff         7: quit         8: help
+            What now> 1
+                       staged     unstaged path
+              1:    unchanged       +29/-1 chapter06.txt
+
+            *** Commands ***
+              1: status       2: update       3: revert       4: add untracked
+              5: patch        6: diff         7: quit         8: help
+            What now> 8
+            status        - show paths with changes
+            update        - add working tree state to the staged set of changes
+            revert        - revert staged set of changes back to the HEAD version
+            patch         - pick hunks and update selectively
+            diff          - view diff between HEAD and index
+            add untracked - add contents of untracked files to the staged set of changes
+
+    2.暂存补丁
+
+3.储藏（Stashing）
+    当你正在进行项目中某一部分的工作，里面的东西处于一个比较
+    杂乱的状态，而你想转到其他分支上进行一些工作。问题是，你不想提交进行了一半的工
+    作，否则以后你无法回到这个工作点。解决这个问题的办法就是git stash命令。
+
+    1.储藏你的工作
+        git stash           存储(从上次提交之后到)当前的工作状态
+        git stash list      查看stash中已经存储的工作状态
+        git stash apply     恢复最近的一次工作状态
+        git stash apply stash@{2}     恢复list中指定的工作状态
+
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git stash
+            Saved working directory and index state WIP on master: a3cc210 Pro Git chapter06 Git Tools 2018-1-24 15:40:25
+
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git status
+            On branch master
+            Your branch and 'origin/master' have diverged,
+            and have 1 and 1 different commits each, respectively.
+              (use "git pull" to merge the remote branch into yours)
+
+            nothing to commit, working tree clean
+
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git stash list
+            stash@{0}: WIP on master: a3cc210 Pro Git chapter06 Git Tools 2018-1-24 15:40:25
+
+        C:\Users\Lenovo\Desktop\GitProjects\ProGit>git stash apply
+            On branch master
+            Your branch and 'origin/master' have diverged,
+            and have 1 and 1 different commits each, respectively.
+              (use "git pull" to merge the remote branch into yours)
+
+            Changes not staged for commit:
+              (use "git add <file>..." to update what will be committed)
+              (use "git checkout -- <file>..." to discard changes in working directory)
+
+                    modified:   chapter06.txt
+
+            no changes added to commit (use "git add" and/or "git commit -a")
